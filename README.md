@@ -50,3 +50,6 @@ Even if enabled, *SaveMyAss* will remain silent for the instructor's repository 
 3. Run `python .savemyass/setup.py` from the root of the repository to launch the setup wizard. The setup wizard will ask you to set your secret passkey and will install the required git-hooks. If you have previously set up *SaveMyAss* and cloning the repository again, you must provide the same secret passkey as your previous setup to decrypt the files. The setup wizard will decrypt the files for you.
 
 To uninstall *SaveMyAss* and push the clear text files to your repository, run `python .savemyass/freemyass.py` from the root of the repository. This will remove the git-hooks, decrypt the files, and destroy the secret passkey.
+
+## Contributing and Support
+Contributions are most welcome! Please feel free to fork the repository and submit a pull request. If you have any questions or need support with using *SaveMyAss*, please open an issue in the repository.
