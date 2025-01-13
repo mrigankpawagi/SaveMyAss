@@ -1,0 +1,8 @@
+{
+  "instructor_repository": "https://github.com/username/repository",
+  "assignments": [
+    "path/to/directory/",
+    "path/to/file.txt",
+    "path/to/another/directory/*.python"
+  ]
+}
