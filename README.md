@@ -4,7 +4,7 @@
 
 - **Instructors** often like to use a GitHub repository to share class materials, including assignments. This repository is public and is periodically updated.
 
-- **Students** find it convinient to fork the repository in order to easily get the latest updates while being able to make and keep their own changes. *However, this is a problem when it comes to assignments!* Students may accidentally push their assignment solutions to their fork of the repository. Since the original repository is public, so is their fork &mdash; and so are their solutions! **This is accidental plagiarism.** The only way around is to manage another way to store and manage their solutions.
+- **Students** find it convenient to fork the repository in order to easily get the latest updates while being able to make and keep their own changes. *However, this is a problem when it comes to assignments!* Students may accidentally push their assignment solutions to their fork of the repository. Since the original repository is public, so is their fork &mdash; and so are their solutions! **This is accidental plagiarism.** The only way around this is to manage another way to store and manage their solutions.
 
 *SaveMyAss* allows instructors to enable a simple mechanism to prevent students from accidentally plagiarizing their assignments. Instructors can specify which files are considered assignments, and students can run *SaveMyAss* to automatically encrypt these files before pushing them to their fork. **The solutions are still stored in the student's fork, but they are not visible in clear text!**
 
@@ -47,7 +47,7 @@ Even if enabled, *SaveMyAss* will remain silent for the instructor's repository 
 
 2. Clone the forked repository to your local machine.
 
-3. Run `python .savemyass/setup.py` from the root of the repository to launch the setup wizard. The setup wizard will ask you to set your secret passkey and will install the required git-hooks. If you have previously set up *SaveMyAss* and cloning the repository again, you must provide the same secret passkey as your previous setup to decrypt the files. The setup wizard will decrypt the files for you.
+3. Run `python .savemyass/setup.py` from the root of the repository to launch the setup wizard. The setup wizard will ask you to set your secret passkey and will install the required git-hooks. If you have previously set up *SaveMyAss* and are cloning the repository again, you must provide the same secret passkey as your previous setup to decrypt the files. The setup wizard will decrypt the files for you.
 
 To uninstall *SaveMyAss* and push the clear text files to your repository, run `python .savemyass/freemyass.py` from the root of the repository. This will remove the git-hooks, decrypt the files, and destroy the secret passkey.
 
