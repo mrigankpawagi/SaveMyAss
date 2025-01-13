@@ -38,7 +38,7 @@ Even if enabled, *SaveMyAss* will remain silent for the instructor's repository 
 ### For Students
 
 > [!NOTE]
-> If the instructor has not provided *SaveMyAss* with the repository, students can add it to their form using the same steps as above. Here, we assume that the instructor has provided *SaveMyAss* with their repository.
+> If the instructor has not provided *SaveMyAss* with the repository, students can add it to their fork using the same steps as above. Here, we assume that the instructor has provided *SaveMyAss* with their repository.
 
 > [!NOTE]
 > The following steps assume that you have Python installed on your machine.
