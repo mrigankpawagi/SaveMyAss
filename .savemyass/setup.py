@@ -3,7 +3,6 @@ import shutil
 import stat
 import getpass
 import subprocess
-import json
 
 def setup_passphrase():
     secret_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.secret')
