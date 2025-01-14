@@ -16,7 +16,7 @@ Instructors can provide *SaveMyAss* along with their repository to make it easy 
 
 1. Copy the `.savemyass` directory in this repository to the root of your repository.
 
-2. Edit the `config.json` file in the `.savemyass` directory to specify your repository and the assignment files. The `config.json` file should look like this:
+2. Edit the `_config.json` file in the `.savemyass` directory to specify your repository and the assignment files. The `_config.json` file should look like this:
 
 ```json
 {
