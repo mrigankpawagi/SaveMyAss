@@ -35,13 +35,15 @@ Even if enabled, *SaveMyAss* will remain silent for the instructor's repository 
 
 4. Commit and push the changes to your repository.
 
+5. (Bonus) Add the contents of `INSTRUCTIONS.md` to your repository's `README.md` file to instruct students on how to use *SaveMyAss*.
+
 ### For Students
 
 > [!NOTE]
 > If the instructor has not provided *SaveMyAss* with the repository, students can add it to their fork using the same steps as above. Here, we assume that the instructor has provided *SaveMyAss* with their repository.
 
 > [!NOTE]
-> The following steps assume that you have Python installed on your machine.
+> The following steps assume that you have Python 3.7+ installed on your machine.
 
 1. Fork the instructor's repository.
 
