@@ -55,14 +55,11 @@ def inject_python_command(hook_path, python_cmd):
     with open(hook_path, 'w') as f:
         f.write(modified)
 
-def install_hooks():
+def install_hooks(python_cmd):
     # Get the root directory (where .git is)
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     hooks_dir = os.path.join(root_dir, '.git', 'hooks')
     source_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Get Python command
-    python_cmd = get_python_command()
     
     # Hooks to install
     hooks = ['pre-commit', 'post-checkout']
@@ -121,13 +118,27 @@ def get_python_command():
                 print(f"Using default command: {default_cmd}")
                 return default_cmd
 
+def install_dependencies(python_cmd):
+    """Install required Python dependencies"""
+    print("\nInstalling required dependencies...")
+    try:
+        subprocess.check_call([python_cmd, '-m', 'pip', 'install', 'cryptography'])
+        print("Successfully installed dependencies")
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: Failed to install dependencies: {str(e)}")
+        print("Please manually install the 'cryptography' module using pip")
+    except Exception as e:
+        print(f"Warning: Unexpected error during dependency installation: {str(e)}")
+        print("Please manually install the 'cryptography' module using pip")
 
 if __name__ == "__main__":
     try:
         print("\nSaveMyAss Setup")
         print("===============")
         setup_passphrase()
-        install_hooks()
+        python_cmd = get_python_command()
+        install_dependencies(python_cmd)
+        install_hooks(python_cmd)
         trigger_checkout()
         print("\nSetup completed successfully!")
     except Exception as e:
