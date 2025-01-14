@@ -3,6 +3,7 @@ import shutil
 import stat
 import getpass
 import subprocess
+import json
 
 def setup_passphrase():
     secret_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.secret')
@@ -41,12 +42,29 @@ def setup_passphrase():
     print("\nPassphrase saved successfully")
     print("Remember this passphrase - you'll need it to decrypt your assignments later!")
 
+def inject_python_command(hook_path, python_cmd):
+    """Inject Python command at the start of the hook file"""
+    with open(hook_path, 'r') as f:
+        content = f.read()
+    
+    # Add Python command definition after shebang
+    modified = content.replace(
+        "#!/bin/bash\n\nPYTHON=python3",
+        f"#!/bin/bash\n\nPYTHON='{python_cmd}'"
+    )
+    
+    with open(hook_path, 'w') as f:
+        f.write(modified)
+
 def install_hooks():
     # Get the root directory (where .git is)
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     hooks_dir = os.path.join(root_dir, '.git', 'hooks')
     source_dir = os.path.dirname(os.path.abspath(__file__))
 
+    # Get Python command
+    python_cmd = get_python_command()
+    
     # Hooks to install
     hooks = ['pre-commit', 'post-checkout']
     
@@ -57,6 +75,9 @@ def install_hooks():
         # Copy the hook file
         print(f"Installing {hook} hook...")
         shutil.copy2(src, dst)
+        
+        # Inject Python command
+        inject_python_command(dst, python_cmd)
         
         # Make it executable (equivalent to chmod +x)
         st = os.stat(dst)
@@ -75,6 +96,32 @@ def trigger_checkout():
         print(f"Warning: Failed to decrypt files: {str(e)}")
     except Exception as e:
         print(f"Warning: Unexpected error during decryption: {str(e)}")
+
+def get_python_command():
+    default_cmd = 'python'
+    
+    print("\nPython Command Setup")
+    print("--------------------")
+    print("Please specify the command to run Python on your system.")
+    print("Common values: 'python', 'python3', '/path/to/python3'\n")
+    
+    while True:
+        cmd = input(f"Enter Python command [{default_cmd}]: ").strip()
+        if not cmd:
+            cmd = default_cmd
+            
+        try:
+            # Test the command
+            version = subprocess.check_output([cmd, '--version']).decode().strip()
+            print(f"Detected: {version}")
+            return cmd
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            print(f"Error: Unable to run Python using '{cmd}'")
+            retry = input("Try another command? (Y/n): ")
+            if retry.lower() == 'n':
+                print(f"Using default command: {default_cmd}")
+                return default_cmd
+
 
 if __name__ == "__main__":
     try:

@@ -47,7 +47,7 @@ Even if enabled, *SaveMyAss* will remain silent for the instructor's repository 
 
 2. Clone the forked repository to your local machine.
 
-3. Run `python .savemyass/setup.py` from the root of the repository to launch the setup wizard. The setup wizard will ask you to set your secret passkey and will install the required git-hooks. If you have previously set up *SaveMyAss* and are cloning the repository again, you must provide the same secret passkey as your previous setup to decrypt the files. The setup wizard will decrypt the files for you.
+3. Run `python .savemyass/setup.py` from the root of the repository to launch the setup wizard. The setup will ask you to provide the Python command to run on your machine and a secret passkey to encrypt your assignment files. The setup wizard will then automatically install the required git-hooks. If you have previously set up *SaveMyAss* and are cloning the repository again, you must provide the same secret passkey as your previous setup to decrypt the files. The setup wizard will decrypt the files for you.
 
 To uninstall *SaveMyAss* and push the clear text files to your repository, run `python .savemyass/freemyass.py` from the root of the repository. This will remove the git-hooks, decrypt the files, and destroy the secret passkey.
 
