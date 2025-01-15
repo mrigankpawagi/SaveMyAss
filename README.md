@@ -55,3 +55,8 @@ To uninstall *SaveMyAss* and push the clear text files to your repository, run `
 
 ## Contributing and Support
 Contributions are most welcome! Please feel free to fork the repository and submit a pull request. If you have any questions or need support with using *SaveMyAss*, please open an issue in the repository.
+
+## Course Repositories using SaveMyAss
+
+- [Proofs and Programs](https://github.com/proofs-and-programs/proofs-and-programs-25), Indian Institute of Science (January 2025)
+
