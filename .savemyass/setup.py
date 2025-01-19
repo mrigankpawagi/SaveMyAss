@@ -121,7 +121,7 @@ def get_python_command():
                 print(f"Using default command: {default_cmd}")
                 return default_cmd
 
-def check_dependencies(python_cmd: str = sys.executable):
+def check_dependencies(python_cmd):
     """
     Checks dependencies existence before installing it again unnecessarily.
     """
@@ -137,9 +137,9 @@ def check_dependencies(python_cmd: str = sys.executable):
 
     return uninstalled_dependency
 
-def install_dependencies(python_cmd):
+def install_dependencies(pip_cmd):
     """Install required Python dependencies"""
-    uninstalled_dependency = check_dependencies(python_cmd)
+    uninstalled_dependency = check_dependencies(pip_cmd)
 
     if not len(uninstalled_dependency) > 0:
         print("All dependencies are pre-installed. Good to go!")
@@ -148,7 +148,7 @@ def install_dependencies(python_cmd):
 
     for dependency in uninstalled_dependency:
         try:
-            subprocess.check_call([python_cmd, '-m', 'pip', 'install', dependency])
+            subprocess.check_call([pip_cmd, 'install', dependency])
             print(f"Successfully installed {dependency}")
         except subprocess.CalledProcessError as e:
             print(f"Warning: Failed to install dependencies: {str(e)}")
@@ -157,14 +157,52 @@ def install_dependencies(python_cmd):
             print(f"Warning: Unexpected error during dependency installation: {str(e)}")
             print(f"Please manually install the {dependency} module using pip")
 
+def create_virtualenv(venv_path):
+    """Create a virtual environment"""
+    if not os.path.exists(venv_path):
+        print("\nCreating virtual environment...")
+        subprocess.check_call([sys.executable, '-m', 'venv', venv_path])
+        print("Virtual environment created successfully")
+    else:
+        print("Virtual environment already exists")
+
+def which_shell():
+    """Detect the user's shell and return the appropriate profile file"""
+    shell = os.environ.get('SHELL', '')
+    if "fish" not in shell:
+        return os.path.expanduser(f'~/.{shell}rc')
+    else:
+        return os.path.expanduser('~/.config/fish/config.fish')
+
+def update_shell_profile(venv_path):
+    """Update shell profile to source the virtual environment automatically"""
+    try:
+        shell_profile = which_shell()
+        activate_script = os.path.join(venv_path, 'bin', 'activate')
+
+        with open(shell_profile, 'a') as f:
+            f.write(f'\n# Activate virtual environment\nsource {activate_script}\n')
+
+        print(f"Updated {shell_profile} to source the virtual environment automatically")
+    except ValueError as e:
+        print(str(e))
+
 if __name__ == "__main__":
     try:
         print("\nSaveMyAss Setup")
         print("===============")
         setup_passphrase()
         python_cmd = get_python_command()
-        install_dependencies(python_cmd)
-        install_hooks(python_cmd)
+        venv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'venv')
+        create_virtualenv(venv_path)
+        update_shell_profile(venv_path)
+        
+        # Use the python and pip from the virtual environment
+        venv_python = os.path.join(venv_path, 'bin', 'python')
+        venv_pip = os.path.join(venv_path, 'bin', 'pip')
+        
+        install_dependencies(venv_pip)
+        install_hooks(venv_python)
         trigger_checkout()
         print("\nSetup completed successfully!")
     except Exception as e:
