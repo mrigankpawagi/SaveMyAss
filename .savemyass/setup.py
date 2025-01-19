@@ -2,6 +2,8 @@ import os
 import shutil
 import stat
 import getpass
+import sys
+import importlib
 import subprocess
 
 def setup_passphrase():
@@ -85,7 +87,7 @@ def trigger_checkout():
     try:
         # Get current branch/commit
         current = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode().strip()
-        print(f"\nDecrypting files...")
+        print("\nDecrypting files...")
         # Checkout to same location to trigger post-checkout hook
         subprocess.check_call(['git', 'checkout', current])
     except subprocess.CalledProcessError as e:
@@ -94,15 +96,16 @@ def trigger_checkout():
         print(f"Warning: Unexpected error during decryption: {str(e)}")
 
 def get_python_command():
-    default_cmd = 'python'
+    default_cmd = sys.executable # gets ${which python3}
     
     print("\nPython Command Setup")
     print("--------------------")
     print("Please specify the command to run Python on your system.")
-    print("Common values: 'python', 'python3', '/path/to/python3'\n")
+    print("Common values: 'python', 'python3', '/path/to/python3'")
+    print(f"Default Python: {default_cmd}\n")
     
     while True:
-        cmd = input(f"Enter Python command [{default_cmd}]: ").strip()
+        cmd = input("Enter Python command (leave empty to choose default): ").strip()
         if not cmd:
             cmd = default_cmd
             
@@ -118,18 +121,41 @@ def get_python_command():
                 print(f"Using default command: {default_cmd}")
                 return default_cmd
 
+def check_dependencies(python_cmd: str = sys.executable):
+    """
+    Checks dependencies existence before installing it again unnecessarily.
+    """
+    dependencies = ["cryptography"]
+    uninstalled_dependency = []
+    for dependency in dependencies:
+        try:
+            # Tries to import it, if fails, will get it installed later
+            importlib.import_module(dependency)
+        except ImportError:
+            print(f"Dependency {dependency} is not installed.")
+            uninstalled_dependency.append(dependency)
+
+    return uninstalled_dependency
+
 def install_dependencies(python_cmd):
     """Install required Python dependencies"""
+    uninstalled_dependency = check_dependencies(python_cmd)
+
+    if not len(uninstalled_dependency) > 0:
+        print("All dependencies are pre-installed. Good to go!")
+        return
     print("\nInstalling required dependencies...")
-    try:
-        subprocess.check_call([python_cmd, '-m', 'pip', 'install', 'cryptography'])
-        print("Successfully installed dependencies")
-    except subprocess.CalledProcessError as e:
-        print(f"Warning: Failed to install dependencies: {str(e)}")
-        print("Please manually install the 'cryptography' module using pip")
-    except Exception as e:
-        print(f"Warning: Unexpected error during dependency installation: {str(e)}")
-        print("Please manually install the 'cryptography' module using pip")
+
+    for dependency in uninstalled_dependency:
+        try:
+            subprocess.check_call([python_cmd, '-m', 'pip', 'install', dependency])
+            print(f"Successfully installed {dependency}")
+        except subprocess.CalledProcessError as e:
+            print(f"Warning: Failed to install dependencies: {str(e)}")
+            print(f"Please manually install the {dependency} module using pip")
+        except Exception as e:
+            print(f"Warning: Unexpected error during dependency installation: {str(e)}")
+            print(f"Please manually install the {dependency} module using pip")
 
 if __name__ == "__main__":
     try:
